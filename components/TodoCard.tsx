@@ -28,7 +28,7 @@ function TodoCard({
         >
             <div className="flex justify-between items-center p-5">
                 <p>{todo.title}</p>
-                <button className='text-red-500 hover:text-red-600'>
+                <button className='text-red-500 hover:text-red-400'>
                     <XCircleIcon className='ml-5 h-8 w-8' />
                 </button>
             </div>
