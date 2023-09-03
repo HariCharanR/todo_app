@@ -1,0 +1,55 @@
+
+import {dbs} from "@/appwrite"
+export const getTodosGroupedByColumn = async () => {
+    const data = await dbs.listDocuments(process.env.NEXT_PUBLIC_DB_ID!, process.env.NEXT_PUBLIC_COLLECTION_ID!);
+
+    const todos = data.documents;
+    const columns = todos.reduce((acc , todo) => {
+                if(!acc.get(todo.status)){
+                    acc.set(todo.status , {
+                        id : todo.status,
+                        todos:[]
+                    })
+                }
+
+                acc.get(todo.status)!.todos.push({
+                    $id:todo.$id,
+                    $createdAt:todo.$createdAt,
+                    title:todo.title,
+                    status:todo.status,
+                    ...(todo.image && {image : todo.image}),
+                })
+
+                return acc 
+    }, new Map<TypedColumn , Column>)
+
+    // console.log(columns);
+
+    const columnTypes : TypedColumn[] = ["todo","inprogress","done"]
+
+    for(const columnType of columnTypes){
+            if(!columns.get(columnType)){
+                columns.set(columnType,{
+                    id:columnType,
+                    todos:[]
+                });
+            }
+    }
+
+    // console.log(columns);
+
+
+    const sortedColumns = new Map(
+        Array.from(columns.entries()).sort((a,b) => (
+            columnTypes.indexOf(a[0]) - columnTypes.indexOf(b[0])
+        ))
+    );
+
+
+        const board : Board = {
+            columns:sortedColumns
+        }
+
+        return board ;
+
+}
