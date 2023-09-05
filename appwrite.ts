@@ -14,4 +14,6 @@ client
 export const account = new Account(client);
 export const dbs = new Databases(client);
 export const storage = new Storage(client);
+export const id = ID;
+
 
